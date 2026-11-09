@@ -1,4 +1,4 @@
-```python
+
 """Streamlit app for diamond price prediction with a KNN regression pipeline."""
 
 import pickle

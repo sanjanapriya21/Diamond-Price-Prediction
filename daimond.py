@@ -184,7 +184,7 @@ print("R2 Score:", r2)
     with MODEL_PATH.open("wb") as model_file:
         pickle.dump(pipeline, model_file)
 
-    return pipeline, data
+    return pipeline, data,mae, rmse, r2
 
 
 def main() -> None:
@@ -195,7 +195,7 @@ def main() -> None:
 
     try:
         data = load_dataset(str(DATA_PATH))
-        pipeline, data = train_model(str(DATA_PATH), DATA_PATH.stat().st_mtime)
+        pipeline, data, mae, rmse, r2 = train_model(str(DATA_PATH), DATA_PATH.stat().st_mtime)
     except (OSError, ValueError, pd.errors.ParserError) as error:
         st.error(f"Unable to prepare the diamond model: {error}")
         st.stop()
@@ -210,6 +210,13 @@ def main() -> None:
         """,
         unsafe_allow_html=True,
     )
+    st.subheader("Model Evaluation")
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric("MAE", f"{mae:,.2f}")
+col2.metric("RMSE", f"{rmse:,.2f}")
+col3.metric("R² Score", f"{r2:.4f}")
 
     st.subheader("Price estimator")
     st.write("Enter the stone's measurements and quality grades to get an estimate.")
